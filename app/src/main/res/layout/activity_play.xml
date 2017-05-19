@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#212121"
+    tools:context="com.omkar_p31.admim.splay.PlayActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:src="@drawable/wall"
+        android:scaleType="center"
+        android:id="@+id/albumArt"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/currTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="00:00"
+            android:textColor="#FFFFFF"
+            android:textAlignment="textStart"
+            android:textSize="26sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:id="@+id/time"
+            android:layout_weight="1"
+            android:textSize="26sp"
+            android:textColor="#FFFFFF"
+            android:textAlignment="textEnd"
+            android:padding="8dp"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/songName"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="8dp"
+        android:text="Song Name"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/artName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Artist Name"
+        android:padding="4dp"
+        android:textColor="#FFFFFF"
+        android:textAlignment="center"
+        android:textSize="26sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/pau"
+            android:id="@+id/playpause"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
