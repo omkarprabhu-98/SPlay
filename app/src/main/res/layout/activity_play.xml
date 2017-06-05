@@ -16,6 +16,15 @@
         android:id="@+id/albumArt"
 
         />
+    <SeekBar
+        android:id="@+id/songProgressBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,18 +61,18 @@
         android:id="@+id/songName"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:padding="8dp"
+        android:padding="4dp"
         android:text="Song Name"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+        android:textSize="28sp" />
 
     <TextView
         android:id="@+id/artName"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Artist Name"
-        android:padding="4dp"
+        android:padding="2dp"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
         android:textSize="26sp" />
@@ -76,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/pau"
+            android:src="@drawable/pause"
             android:id="@+id/playpause"
             />
 

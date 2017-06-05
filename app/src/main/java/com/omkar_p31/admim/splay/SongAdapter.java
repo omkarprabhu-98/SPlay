@@ -31,8 +31,11 @@ public class SongAdapter extends ArrayAdapter<Songs> {
             sons_list= LayoutInflater.from(getContext()).inflate(R.layout.song_list,parent,false);
         }
 
+        // getting item
         Songs s = getItem(position);
+        // displayig item
         TextView sName = (TextView) sons_list.findViewById(R.id.s_name);
+
         sName.setText(s.get_song_name());
         return sons_list;
 

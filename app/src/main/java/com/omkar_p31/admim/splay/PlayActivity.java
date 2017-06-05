@@ -6,125 +6,49 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static com.omkar_p31.admim.splay.R.id.currTime;
+import java.io.IOException;
+
+import static com.omkar_p31.admim.splay.R.drawable.play;
 
 public class PlayActivity extends AppCompatActivity {
 
-    private MediaPlayer mPlayer;
-    private int check_p = 0;
+    private MediaPlayer mPlayer = new MediaPlayer();
+    // Intent bundle for getting extra info
 
-    Handler handle = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg) {
-            long curr_time = mPlayer.getCurrentPosition();
-            TextView curr = (TextView) findViewById(currTime);
-            curr.setText(milliSecondsToTimer(curr_time));
-        }
-    };
+    String to_play;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-
-        // Intent bundle
         Bundle play = getIntent().getExtras();
-        int to_play = play.getInt("id");
-        mPlayer = MediaPlayer.create(PlayActivity.this, to_play);
-        mPlayer.start();
-        // Variables
-        final ImageView playpause = (ImageView) findViewById(R.id.playpause);
-        final ImageView album_art = (ImageView) findViewById(R.id.albumArt) ;
-        final TextView album = (TextView) findViewById(R.id.songName);
-        final TextView artist = (TextView) findViewById(R.id.artName);
-        final TextView total = (TextView) findViewById(R.id.time);
+        to_play = play.getString("uri");
 
 
-        // time variables
-        final long total_time = mPlayer.getDuration();
-
-
-        // metaData Retrieval
-        MediaMetadataRetriever metaRetriver = new MediaMetadataRetriever();
-        byte[] art;
-        Uri mediaPath = Uri.parse("android.resource://" + getPackageName() + "/" + to_play);
-        metaRetriver.setDataSource(this, mediaPath);
-        try {
-            art = metaRetriver.getEmbeddedPicture();
-            Bitmap songImage = BitmapFactory.decodeByteArray(art, 0, art.length);
-            album_art.setImageBitmap(songImage);
-            album.setText(metaRetriver .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
-            artist.setText(metaRetriver .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-
-        }
-        catch (Exception e)
-        {
-            album.setText("Unknown Album");
-            artist.setText("Unknown Artist");
+        if(to_play != null) {
+            playSong();
         }
 
 
-        // time
-        total.setText(milliSecondsToTimer(total_time));
-
-
-        // OnClickListeners
 
 
 
 
-        playpause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mPlayer.isPlaying()) {
-                    playpause.setImageResource(R.drawable.pla);
-                    mPlayer.pause();
-                    check_p = 0;
-                }
-                else {
-                    playpause.setImageResource(R.drawable.pau);
-                    mPlayer.start();
-                    check_p = 1;
-                }
-
-            }
-        });
 
 
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                onBackPressed();
-            }
-        });
-
-
-
-        Runnable currTime = new Runnable() {
-            @Override
-            public void run() {
-
-                while(mPlayer.isPlaying())
-                {
-                    handle.sendEmptyMessage(0);
-                }
-            }
-        };
-        Thread cTime = new Thread(currTime);
-        cTime.start();
 
 
     }
 
 
+    /**
+     * back press event
+     */
 
     @Override
     public void onBackPressed() {
@@ -135,8 +59,8 @@ public class PlayActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    /*
-        activity lifecycle callback
+    /**
+     * activity lifecycle callback
      */
     @Override
     protected void onStop() {
@@ -148,6 +72,9 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *time converter
+     */
     public String milliSecondsToTimer(long milliseconds){
         String finalTimerString = "";
         String secondsString;
@@ -172,5 +99,79 @@ public class PlayActivity extends AppCompatActivity {
         // return timer string
         return finalTimerString;
     }
+
+    private void playSong()
+    {
+        Uri toPlayUri = Uri.parse(to_play);
+        try {
+            mPlayer.setDataSource(PlayActivity.this,toPlayUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mPlayer.start();
+
+        // Variables in play layout
+        final ImageView playpause = (ImageView) findViewById(R.id.playpause);
+        final ImageView album_art = (ImageView) findViewById(R.id.albumArt) ;
+        final TextView album = (TextView) findViewById(R.id.songName);
+        final TextView artist = (TextView) findViewById(R.id.artName);
+        final TextView total = (TextView) findViewById(R.id.time);
+        final TextView curr = (TextView) findViewById(R.id.currTime);
+
+
+        // time variable
+        final long total_time = mPlayer.getDuration();
+
+
+        // metaData Retrieval
+        MediaMetadataRetriever metaRetriver = new MediaMetadataRetriever();
+        byte[] art;
+
+        metaRetriver.setDataSource(PlayActivity.this, toPlayUri);
+        try {
+            art = metaRetriver.getEmbeddedPicture();
+            Bitmap songImage = BitmapFactory.decodeByteArray(art, 0, art.length);
+            album_art.setImageBitmap(songImage);
+            album.setText(metaRetriver .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+            artist.setText(metaRetriver .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
+
+        }
+        catch (Exception e)
+        {
+            album.setText("Unknown Album");
+            artist.setText("Unknown Artist");
+        }
+
+
+        // Event Listeners
+
+        // play/pause image onClick
+        playpause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPlayer.isPlaying()) {
+                    playpause.setImageResource(play);
+                    mPlayer.pause();
+
+                }
+                else {
+                    playpause.setImageResource(R.drawable.pause);
+                    mPlayer.start();
+                }
+
+            }
+        });
+
+        // on completion of mediaPlayer
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                onBackPressed();
+            }
+        });
+
+
+    }
+
 
 }

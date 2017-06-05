@@ -13,12 +13,6 @@
         android:background="#212121"
         >
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/play"
-            />
         <TextView
             android:id="@+id/s_name"
             android:layout_width="0dp"

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.omkar_p31.admim.splay">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:protectionLevel="normal"></uses-permission>
+    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" android:protectionLevel="normal"></uses-permission-sdk-23>
 
     <application
         android:allowBackup="true"
