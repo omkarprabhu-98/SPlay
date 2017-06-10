@@ -8,21 +8,25 @@
     android:background="#212121"
     tools:context="com.omkar_p31.admim.splay.PlayActivity">
 
+    <!-- Image of Song -->
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="290dp"
-        android:src="@drawable/wall"
-        android:scaleType="center"
         android:id="@+id/albumArt"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
+        android:layout_height="230dp"
+        android:scaleType="center"
+        android:layout_margin="16dp"
+        android:src="@drawable/wall"
 
         />
+    <!-- Seekbar For Song -->
     <SeekBar
         android:id="@+id/songProgressBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
         android:paddingLeft="6dp"
         android:paddingRight="6dp" />
 
@@ -32,62 +36,77 @@
         android:orientation="horizontal"
         >
 
+        <!-- Current Time Of Song-->
         <TextView
             android:id="@+id/currTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="8dp"
+            android:padding="4dp"
             android:text="00:00"
             android:textColor="#FFFFFF"
             android:textAlignment="textStart"
-            android:textSize="26sp" />
+            android:textSize="24sp" />
 
+        <!-- Total Duration of Song-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="00:00"
             android:id="@+id/time"
             android:layout_weight="1"
-            android:textSize="26sp"
+            android:textSize="24sp"
             android:textColor="#FFFFFF"
             android:textAlignment="textEnd"
-            android:padding="8dp"
+            android:padding="4dp"
             />
 
     </LinearLayout>
 
+    <!-- Song Name -->
     <TextView
         android:id="@+id/songName"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:padding="4dp"
+        android:layout_margin="8dp"
         android:text="Song Name"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="28sp" />
+        android:textSize="26sp"
+        android:height="43dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
 
+    <!-- Artist Name -->
     <TextView
         android:id="@+id/artName"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="Artist Name"
+        android:layout_height="wrap_content"
         android:padding="2dp"
-        android:textColor="#FFFFFF"
+        android:layout_margin="8dp"
+        android:text="Artist Name"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textAlignment="center"
-        android:textSize="26sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:height="33dp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        >
 
+        <!-- Play Pause Button -->
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/pause"
             android:id="@+id/playpause"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_gravity="center"
+            android:src="@drawable/pause" />
 
     </LinearLayout>
 

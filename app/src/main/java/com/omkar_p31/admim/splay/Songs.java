@@ -5,15 +5,13 @@ package com.omkar_p31.admim.splay;
  */
 
 public class Songs {
-//    Added variables for storing image id and song name
+//    Added variables for storing song name
+    private String mSongName = "";
 
-    private String mSongName = "Nthing";
-    private String mIndex;
 
 //    Default constructor
-    public Songs(String name,String index)
+    public Songs(String name)
     {
-        mIndex = index;
         mSongName = name;
     }
 
@@ -21,12 +19,6 @@ public class Songs {
     {
         return mSongName;
     }
-
-    public String get_audio_index()
-    {
-        return mIndex;
-    }
-
 
 
 }
