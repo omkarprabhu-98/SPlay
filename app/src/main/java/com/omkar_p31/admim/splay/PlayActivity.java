@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,11 +19,16 @@ public class PlayActivity extends AppCompatActivity {
 
 
     MediaPlayer mPlayer = new MediaPlayer();
+    Handler handleTimeUpdate ;
+    Thread update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+
+        // handler for updating time
+        handleTimeUpdate = new Handler(getApplicationContext().getMainLooper());
 
         // layout Variables
         final ImageView playpause = (ImageView) findViewById(R.id.playpause);
@@ -66,8 +72,30 @@ public class PlayActivity extends AppCompatActivity {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
 
+                    // total time of song
+                    total.setText(milliSecondsToTimer(mPlayer.getDuration()));
 
+
+                    // thread for updating current song time
+                    update = new Thread(
+                            new Runnable() {
+                                @Override
+                                public void run(){
+                                    try {
+                                        curr.setText(milliSecondsToTimer(mPlayer.getCurrentPosition()));
+                                        handleTimeUpdate.postDelayed(this, 1p00);
+                                    }catch (Exception e){
+
+                                    }
+                                }
+                            }
+                    );
+                    // start thread
+                    update.start();
+
+                    // start song
                     mp.start();
+
 
                 }
             });
@@ -108,7 +136,16 @@ public class PlayActivity extends AppCompatActivity {
         });
 
 
+
+
+
+
+
+
     }
+
+
+
 
 
     /**
