@@ -83,7 +83,7 @@ public class PlayActivity extends AppCompatActivity {
                                 public void run(){
                                     try {
                                         curr.setText(milliSecondsToTimer(mPlayer.getCurrentPosition()));
-                                        handleTimeUpdate.postDelayed(this, 1p00);
+                                        handleTimeUpdate.postDelayed(this, 100);
                                     }catch (Exception e){
 
                                     }
