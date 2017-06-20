@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class PlayActivity extends AppCompatActivity {
         final TextView artist = (TextView) findViewById(R.id.artName);
         final TextView total = (TextView) findViewById(R.id.time);
         final TextView curr = (TextView) findViewById(R.id.currTime);
+        final SeekBar songSeek = (SeekBar) findViewById(R.id.songProgressBar) ;
 
 
         // Intent bundle for getting extra info
@@ -75,23 +77,31 @@ public class PlayActivity extends AppCompatActivity {
                     // total time of song
                     total.setText(milliSecondsToTimer(mPlayer.getDuration()));
 
+                    // seek bar max duration
+                    songSeek.setMax(mPlayer.getDuration());
+
 
                     // thread for updating current song time
                     update = new Thread(
                             new Runnable() {
                                 @Override
-                                public void run(){
+                               public void run(){
                                     try {
                                         curr.setText(milliSecondsToTimer(mPlayer.getCurrentPosition()));
-                                        handleTimeUpdate.postDelayed(this, 100);
-                                    }catch (Exception e){
+                                        songSeek.setProgress(mPlayer.getCurrentPosition());
+                                        handleTimeUpdate.postDelayed(this, 1000);
+
+                                    }catch(Exception e){
 
                                     }
+
                                 }
                             }
                     );
                     // start thread
                     update.start();
+
+
 
                     // start song
                     mp.start();
@@ -132,6 +142,28 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 onBackPressed();
+            }
+        });
+
+
+        // seek bar touch listener
+        songSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mPlayer != null && fromUser){
+                    mPlayer.seekTo(progress);
+                }
             }
         });
 
