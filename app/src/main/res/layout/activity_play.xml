@@ -64,7 +64,7 @@
     <SeekBar
         android:id="@+id/songProgressBar"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -114,6 +114,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="1dp"
+
         >
 
         <!-- Play Pause Button -->
@@ -121,7 +122,7 @@
             android:alpha=".9"
             android:id="@+id/playpause"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginBottom="14dp"
             android:src="@drawable/pause" />
