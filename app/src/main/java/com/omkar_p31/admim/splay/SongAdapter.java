@@ -33,7 +33,7 @@ public class SongAdapter extends ArrayAdapter<Songs> {
 
         // getting item
         Songs s = getItem(position);
-        // displayig item
+        // displaying item
         TextView sName = (TextView) sons_list.findViewById(R.id.s_name);
         String fileName = s.get_song_name();
         fileName = fileName.substring(0, fileName.lastIndexOf('.'));

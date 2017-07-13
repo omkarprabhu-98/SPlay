@@ -13,6 +13,13 @@
         android:background="#000000"
         >
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_play"
+            android:layout_marginEnd="16dp"
+            />
+
         <TextView
             android:id="@+id/s_name"
             android:layout_width="0dp"

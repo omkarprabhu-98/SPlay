@@ -1,7 +1,9 @@
 package com.omkar_p31.admim.splay;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -16,29 +18,84 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
+
 public class PlayActivity extends AppCompatActivity {
+
+
+    // layout Variables
+     ImageView playpause;
+     ImageView album_art;
+     TextView album  ;
+     TextView artist;
+     TextView total ;
+     TextView curr ;
+     SeekBar songSeek;
 
 
     MediaPlayer mPlayer = new MediaPlayer();
     Handler handleTimeUpdate ;
     Thread update;
+    static  int mProgress;
+    static boolean mediaOnHold;
+    AudioManager am ;
+
+
+
+    AudioManager.OnAudioFocusChangeListener afChangeListener =
+            new AudioManager.OnAudioFocusChangeListener() {
+                public void onAudioFocusChange(int focusChange) {
+                    if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                        // Permanent loss of audio focus
+                        // Pause playback immediately
+                        onBackPressed();
+
+                    }
+                    else if (focusChange == AUDIOFOCUS_LOSS_TRANSIENT) {
+                        // Pause playback
+                        mPlayer.pause();
+                        changeButton();
+                        mPlayer.seekTo(0);
+                    } else if (focusChange == AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                        // Lower the volume, keep playing
+                        mPlayer.pause();
+                        changeButton();
+                        mPlayer.seekTo(0);
+                    } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                        // Your app has been granted audio focus again
+                        // Raise volume to normal, restart playback if necessary
+                        mPlayer.start();
+                        changeButton();
+                    }
+                }
+            };
+
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
+        // audio manager for audio focus
+        am  = (AudioManager) PlayActivity.this.getSystemService(Context.AUDIO_SERVICE);
+
         // handler for updating time
         handleTimeUpdate = new Handler(getApplicationContext().getMainLooper());
 
         // layout Variables
-        final ImageView playpause = (ImageView) findViewById(R.id.playpause);
-        final ImageView album_art = (ImageView) findViewById(R.id.albumArt) ;
-        final TextView album = (TextView) findViewById(R.id.songName);
-        final TextView artist = (TextView) findViewById(R.id.artName);
-        final TextView total = (TextView) findViewById(R.id.time);
-        final TextView curr = (TextView) findViewById(R.id.currTime);
-        final SeekBar songSeek = (SeekBar) findViewById(R.id.songProgressBar) ;
+        playpause = (ImageView) findViewById(R.id.playpause);
+         album_art = (ImageView) findViewById(R.id.albumArt) ;
+        album = (TextView) findViewById(R.id.songName);
+         artist = (TextView) findViewById(R.id.artName);
+         total = (TextView) findViewById(R.id.time);
+        curr = (TextView) findViewById(R.id.currTime);
+         songSeek = (SeekBar) findViewById(R.id.songProgressBar);
 
 
         // Intent bundle for getting extra info
@@ -67,49 +124,60 @@ public class PlayActivity extends AppCompatActivity {
 
         // Play selected media
         try {
-            mPlayer.setDataSource(PlayActivity.this,  Uri.parse(Environment.getExternalStorageDirectory().getPath()+ "/Music/" + to_play));
-            mPlayer.prepareAsync();
 
-            mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
+            // request audio focus
+            int result = am.requestAudioFocus(afChangeListener,
+                    // Use the music stream.
+                    AudioManager.STREAM_MUSIC,
+                    // Request permanent focus.
+                    AudioManager.AUDIOFOCUS_GAIN);
 
-                    // total time of song
-                    total.setText(milliSecondsToTimer(mPlayer.getDuration()));
-
-                    // seek bar max duration
-                    songSeek.setMax(mPlayer.getDuration());
+            // start media on successful audio focus
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 
 
-                    // thread for updating current song time
-                    update = new Thread(
-                            new Runnable() {
-                                @Override
-                               public void run(){
-                                    try {
-                                        curr.setText(milliSecondsToTimer(mPlayer.getCurrentPosition()));
-                                        songSeek.setProgress(mPlayer.getCurrentPosition());
-                                        handleTimeUpdate.postDelayed(this, 1000);
+                mPlayer.setDataSource(PlayActivity.this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/" + to_play));
+                mPlayer.prepareAsync();
 
-                                    }catch(Exception e){
+                mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+
+                        // total time of song
+                        total.setText(milliSecondsToTimer(mPlayer.getDuration()));
+
+                        // seek bar max duration
+                        songSeek.setMax(mPlayer.getDuration());
+
+
+                        // thread for updating current song time
+                        update = new Thread(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            curr.setText(milliSecondsToTimer(mPlayer.getCurrentPosition()));
+                                            songSeek.setProgress(mPlayer.getCurrentPosition());
+                                            handleTimeUpdate.postDelayed(this, 1000);
+
+                                        } catch (Exception e) {
+
+                                        }
 
                                     }
-
                                 }
-                            }
-                    );
-                    // start thread
-                    update.start();
+                        );
+                        // start thread
+                        update.start();
 
 
+                        // start song
+                        mp.start();
+                    }
 
-                    // start song
-                    mp.start();
 
-
-                }
-            });
-
+                });
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -192,6 +260,7 @@ public class PlayActivity extends AppCompatActivity {
                 mPlayer.stop();
             }
             mPlayer.release();
+            am.abandonAudioFocus(afChangeListener);
             super.onBackPressed();
 
         }catch(Exception e)
@@ -210,9 +279,11 @@ public class PlayActivity extends AppCompatActivity {
 
         try {
             if (mPlayer.isPlaying()) {
+
                 mPlayer.stop();
             }
             mPlayer.release();
+            am.abandonAudioFocus(afChangeListener);
             super.onStop();
 
         }
@@ -221,6 +292,26 @@ public class PlayActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    protected void onPause() {
+
+        try {
+            if (mPlayer.isPlaying()) {
+                mProgress = mPlayer.getCurrentPosition();
+                mediaOnHold = true;
+                mPlayer.stop();
+            }
+
+            super.onPause();
+
+        }
+        catch (Exception e){
+            super.onPause();
+        }
+    }
+
+
 
     /**
      *time converter
@@ -250,6 +341,20 @@ public class PlayActivity extends AppCompatActivity {
         return finalTimerString;
     }
 
+
+    public void changeButton(){
+        if (mPlayer.isPlaying()) {
+            playpause.setImageResource(R.drawable.play);
+
+
+        }
+        else {
+            playpause.setImageResource(R.drawable.pause);
+
+        }
+
+
+    }
 
 
 
