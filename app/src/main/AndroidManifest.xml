@@ -17,8 +17,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".PlayActivity"></activity>
+        <activity android:name=".PlayActivity" android:parentActivityName="SonglistActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.omkar_p31.admim.splay.SonglistActivity" />
+        </activity>
     </application>
 
 </manifest>
