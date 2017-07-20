@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,8 +40,7 @@ public class PlayActivity extends AppCompatActivity {
     MediaPlayer mPlayer = new MediaPlayer();
     Handler handleTimeUpdate ;
     Thread update;
-    static  int mProgress;
-    static boolean mediaOnHold;
+    static boolean mediaOnHold = false;
     AudioManager am ;
 
 
@@ -84,7 +84,7 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-
+            Log.d("Check","Inside On create");
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -278,11 +278,16 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
+
+
     /**
      * activity lifecycle callback
      */
+
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
+
+        super.onDestroy();
 
         try {
             if (mPlayer.isPlaying()) {
@@ -291,11 +296,28 @@ public class PlayActivity extends AppCompatActivity {
             }
             mPlayer.release();
             am.abandonAudioFocus(afChangeListener);
-            super.onStop();
+
 
         }
         catch (Exception e){
-            super.onStop();
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("Check", "onStop Called");
+        super.onStop();
+
+        try {
+            if (mPlayer.isPlaying()) {
+                mediaOnHold = true;
+                changeButton();
+                mPlayer.pause();
+            }
+        }
+        catch (Exception e){
+
         }
 
     }
@@ -303,22 +325,30 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
 
+        Log.d("Check", "onPause Called");
+
+        super.onPause();
         try {
             if (mPlayer.isPlaying()) {
-                mProgress = mPlayer.getCurrentPosition();
                 mediaOnHold = true;
-                mPlayer.stop();
+                changeButton();
+                mPlayer.pause();
             }
-
-            super.onPause();
-
         }
         catch (Exception e){
-            super.onPause();
+
         }
     }
 
-
+    @Override
+    protected void onRestart() {
+        Log.d("Check", "onRestart Called");
+        super.onRestart();
+        if(mediaOnHold){
+            changeButton();
+            mediaOnHold = false;
+        }
+    }
 
     /**
      *time converter
@@ -351,17 +381,18 @@ public class PlayActivity extends AppCompatActivity {
 
     public void changeButton(){
         if (mPlayer.isPlaying()) {
-            playpause.setImageResource(R.drawable.play);
+            playpause.setImageResource(R.drawable.pause);
 
 
         }
         else {
-            playpause.setImageResource(R.drawable.pause);
+            playpause.setImageResource(R.drawable.play);
 
         }
 
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
