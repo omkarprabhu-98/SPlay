@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/activity_songlist"
     android:layout_height="match_parent"
-    android:background="#212121"
+    android:background="#1E1C1C"
     android:drawSelectorOnTop="true"
     tools:context="com.omkar_p31.admim.splay.SonglistActivity">
 

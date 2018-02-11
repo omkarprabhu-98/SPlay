@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1C1C"
+    android:background="#1E1E1E"
     tools:context="com.omkar_p31.admim.splay.PlayActivity">
 
     <RelativeLayout
@@ -21,9 +21,9 @@
             android:layout_gravity="center"
             android:alpha="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/wall"
+            android:src="@drawable/wall"/>
 
-            />
+
 
 
         <!-- Song Name -->
@@ -62,11 +62,14 @@
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#1E1E1E"
+        android:elevation="4dp"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:padding="8dp">
         <!-- Seekbar For Song -->
         <SeekBar
             android:id="@+id/songProgressBar"
@@ -117,22 +120,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="1dp"
+            android:layout_marginBottom="4dp"
             android:layout_marginTop="2dp"
-
             >
 
             <!-- Play Pause Button -->
             <ImageView
                 android:id="@+id/playpause"
                 android:layout_width="match_parent"
-                android:layout_height="82dp"
+                android:layout_height="62dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="14dp"
                 android:alpha=".9"
                 android:src="@drawable/pause" />
 
         </LinearLayout>
     </LinearLayout>
+
 
 </LinearLayout>
