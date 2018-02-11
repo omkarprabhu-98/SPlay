@@ -1,0 +1,25 @@
+language: android
+jdk: oraclejdk8
+
+env:
+  matrix:
+  - ANDROID_BUILD_TOOLS_VERSION=27.0.1 ANDROID_API_LEVEL=26
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+android:
+  components:
+  - tools
+  - android-$ANDROID_API_LEVEL
+  - platform-tools
+  - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+
+before_install:
+  - chmod +x gradlew
